@@ -1,0 +1,4 @@
+This hudson plugin allows you to read a jumble xml report and generate a report on a build basis along with a trend graph for the overall project score.
+It will let you set the target project score so you can check if you are meeting the goal.
+See the downloads section for the JumbleHudsonPlugin.hpi to install it in your hudson.
+
