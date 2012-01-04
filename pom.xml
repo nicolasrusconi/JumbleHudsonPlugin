@@ -13,9 +13,46 @@
 
     <groupId>org.jumble</groupId>
     <artifactId>JumbleHudsonPlugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <name>JumbleHudsonPlugin</name>
+    <description><![CDATA["This plugin will read the jumble xml report and generate a graph with the trend over time.It will also generate a report with the score for each package and class. "]]></description>
+    <url>https://github.com/nicolasrusconi/JumbleHudsonPlugin</url>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>http://www.opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+            <comments>Same license than hudson.</comments>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/JumbleHudsonPlugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/JumbleHudsonPlugin.git</developerConnection>
+        <url>https://github.com/nicolasrusconi/JumbleHudsonPlugin.git</url>
+    </scm>
+
+    <properties>
+        <hudsonTags>report</hudsonTags>
+    </properties>
+
+    <developers>
+        <developer>
+            <id>nicolas.rusconi</id>
+            <name>Nicolas</name>
+            <email>nicolas.rusconi@gmail.com</email>
+            <url>http://www.linkedin.com/in/nicolasrusconi</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>-3</timezone>
+            <properties>
+                <picUrl>http://www.gravatar.com/avatar/799a455f57f2d43697d43f7786651c80.png</picUrl>
+            </properties>
+        </developer>
+    </developers>
+
     <dependencies>
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
@@ -26,22 +63,47 @@
 
     <build>
         <plugins>
-              <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source> 
+                    <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
-              </plugin>
-              <plugin>
+            </plugin>
+            <plugin>
                 <groupId>org.jvnet.hudson.tools</groupId>
                 <artifactId>maven-hpi-plugin</artifactId>
                 <version>2.1.1</version>
                 <configuration>
                     <maskClasses>com.thoughtworks.xstream</maskClasses>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
