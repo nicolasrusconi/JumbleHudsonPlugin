@@ -1,0 +1,52 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:local="local">
+  <l:layout title="Test">
+    <st:include page="sidepanel.jelly" it="${it.build}"/>
+    <l:main-panel>
+      <h1> ${%Jumble Scores in package} ${it.package.name} ${it.package.score}</h1>
+      <br/>
+      <table class="pane sortable" id="jumblepackageresult">
+          <tr>
+              <td class="pane-header">
+                  <a href="#" class="sortheader">${%Class}</a>
+              </td>
+              <td class="pane-header" style="width:5em">
+                  <a href="#" class="sortheader">${%Score}</a>
+              </td>
+          </tr>
+          <j:forEach items="${it.package.reports}" var="class">
+              <tr>
+                  <td class="pane"><a href="#${class.name}detail" >${class.name}</a></td>
+                  <td class="pane" style="text-align:right"> ${class.formattedScore} </td>
+              </tr>
+          </j:forEach >
+      </table>
+
+      <j:forEach items="${it.package.reports}" var="class">
+        <br/><br/><br/><br/><br/>
+        <h2><a name="${class.name}">${it.package.name}.${class.name} ${%Mutation Failures}</a></h2>
+
+        <j:if test="${empty(class.fails)}">${%No failed mutations to list for this class}</j:if>
+        <j:if test="${!empty(class.fails)}">
+        <table class="pane sortable" id="${class.name}detail">
+            <tr>
+                <td class="pane-header" style="width:5em">
+                    <a href="#" class="sortheader">${%Line}</a>
+                </td>
+                <td class="pane-header">
+                    <a href="#" class="sortheader">${%Mutation}</a>
+                </td>
+            </tr>
+            <j:forEach items="${class.fails}" var="failure">
+                <tr>
+                    <td class="pane">${failure.line}</td>
+                    <td class="pane"> ${failure.mutant} </td>
+                </tr>
+            </j:forEach >
+        </table>
+        </j:if>
+      </j:forEach>
+    </l:main-panel>
+  </l:layout>
+
+  <br/><br/><br/><br/><br/>
+</j:jelly>

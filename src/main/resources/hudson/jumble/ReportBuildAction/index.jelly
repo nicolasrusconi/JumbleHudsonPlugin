@@ -1,0 +1,29 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:local="local">
+  <l:layout title="Test">
+    <st:include page="sidepanel.jelly" it="${it.build}"/>
+    <l:main-panel>
+      <h1> ${%Jumble Scores by Package}</h1>
+      <br/>
+      <h2> ${%All Packages} </h2>
+      <br/>
+      <table class="pane sortable" id="jumbleresult">
+          <tr>
+              <td class="pane-header">
+                  <a href="#" class="sortheader">${%Package}</a>
+              </td>
+              <td class="pane-header" style="width:5em">
+                  <a href="#" class="sortheader">${%Average Score}</a>
+              </td>
+          </tr>
+          <j:forEach items="${it.jumbleReport.packages}" var="package">
+              <tr>
+                  <td class="pane"> 
+                      <a href="${package.name}/">${package.name}</a>
+                  </td>
+                  <td class="pane" style="text-align:right"> ${package.score} </td>
+              </tr>
+          </j:forEach >
+      </table>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>
