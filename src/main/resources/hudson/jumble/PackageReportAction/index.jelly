@@ -10,12 +10,24 @@
                   <a href="#" class="sortheader">${%Class}</a>
               </td>
               <td class="pane-header" style="width:5em">
+                  <a href="#" class="sortheader">${%Possible Mutations}</a>
+              </td>
+              <td class="pane-header" style="width:5em">
+                  <a href="#" class="sortheader">${%Failed Mutations}</a>
+              </td>
+              <td class="pane-header" style="width:5em">
+                  <a href="#" class="sortheader">${%Time}</a>
+              </td>
+              <td class="pane-header" style="width:5em">
                   <a href="#" class="sortheader">${%Score}</a>
               </td>
           </tr>
           <j:forEach items="${it.package.reports}" var="class">
               <tr>
                   <td class="pane"><a href="#${class.name}detail" >${class.name}</a></td>
+                  <td class="pane" style="text-align:right"> ${class.point} </td>
+                  <td class="pane" style="text-align:right"> ${class.fails.size()} </td>
+                  <td class="pane" style="text-align:right"> ${class.time} </td>
                   <td class="pane" style="text-align:right"> ${class.formattedScore} </td>
               </tr>
           </j:forEach >
