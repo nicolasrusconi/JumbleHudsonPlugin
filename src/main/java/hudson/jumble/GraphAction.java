@@ -39,24 +39,27 @@ public class GraphAction implements Action {
     private static final String TARGET_SERIES = "target";
     private static final String SCORE_SERIES = "score";
     private final AbstractProject<?,?> project;
-    private DefaultCategoryDataset dataset;
+    private final DefaultCategoryDataset dataset;
+    private final JFreeChart chart;
 
     public GraphAction(AbstractProject<?,?> project) {
         this.project = project;
-        initializeDataset();
+        dataset = buildDataset();
+        chart = createChart(dataset);
     }
 
-    private void initializeDataset() {
+    private DefaultCategoryDataset buildDataset() {
         AbstractBuild<?,?> build = findFirstBuildWithJumble(project);
 
-        dataset = new DefaultCategoryDataset();
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         while(build != null) {
             JumbleRunReport report = lookupReportFor(build);
             if (report != null) {
-                addReportToGraph(report, build);
+                addReportToGraph(dataset, report, build);
             }
             build = build.getNextBuild();
         }
+        return dataset;
     }
 
     private AbstractBuild<?, ?> findFirstBuildWithJumble(AbstractProject<?, ?> project) {
@@ -84,6 +87,10 @@ public class GraphAction implements Action {
     }
 
     public void addReportToGraph(JumbleRunReport report, AbstractBuild<?, ?> build) {
+        addReportToGraph(dataset, report, build);
+    }
+
+    private void addReportToGraph(DefaultCategoryDataset dataset, JumbleRunReport report, AbstractBuild<?, ?> build) {
         dataset.setValue(null, SCORE_SERIES, new NumberOnlyBuildLabel(build));
         dataset.setValue(null, TARGET_SERIES, new NumberOnlyBuildLabel(build));
 
@@ -136,7 +143,7 @@ public class GraphAction implements Action {
         Area graphSize = calculateDefaultSize();
         return new Graph(project.getLastBuild().getTimestamp(),graphSize.width,graphSize.height) {
             protected JFreeChart createGraph() {
-                return createChart(dataset);
+                return chart;
             }
         };
     }
@@ -216,10 +223,6 @@ public class GraphAction implements Action {
 
     public DefaultCategoryDataset getDataset() {
         return dataset;
-    }
-
-    public void setDataset(DefaultCategoryDataset dataset) {
-        this.dataset = dataset;
     }
 
     public AbstractProject<?, ?> getProject() {
