@@ -11,7 +11,7 @@
 
     <packaging>hpi</packaging>
 
-    <groupId>org.jumble</groupId>
+    <groupId>org.hudsonci.plugins</groupId>
     <artifactId>JumbleHudsonPlugin</artifactId>
     <version>1.0</version>
 
@@ -28,9 +28,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git://github.com/JumbleHudsonPlugin.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/JumbleHudsonPlugin.git</developerConnection>
-        <url>https://github.com/nicolasrusconi/JumbleHudsonPlugin.git</url>
+        <connection>scm:git:git://github.com/hudson-plugins/JumbleHudsonPlugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/hudson-plugins/JumbleHudsonPlugin.git</developerConnection>
+        <url>https://github.com/hudson-plugins/JumbleHudsonPlugin.git</url>
     </scm>
 
     <properties>
