@@ -3,6 +3,7 @@ package hudson.jumble;
 
 import hudson.model.ProminentProjectAction;
 import hudson.model.AbstractProject;
+import hudson.model.Actionable;
 
 public class ProjectScoreAction implements ProminentProjectAction {
 
@@ -20,11 +21,25 @@ public class ProjectScoreAction implements ProminentProjectAction {
     }
 
     public String getDisplayName() {
-        return Messages.projectScore_displayName();
+        if (lasCompletedBuildHasJumbleReport()) {
+            return Messages.projectScore_displayName();
+        } else {
+            return Messages.projectScore_noReportsYet();
+        }
     }
 
     public String getUrlName() {
-        return "lastCompletedBuild/jumblereport";
+        if (lasCompletedBuildHasJumbleReport()) {
+            return "lastCompletedBuild/jumblereport";
+        }
+        else {
+            return "";
+        }
+    }
+
+    private boolean lasCompletedBuildHasJumbleReport() {
+        Actionable build = (Actionable) project.getLastCompletedBuild();
+        return build !=null && build.getAction(ReportBuildAction.class) != null;
     }
 
 }

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -58,9 +59,9 @@ public class GraphAction implements Action {
         }
     }
 
-    private AbstractBuild<?, ?> findFirstBuildWithJumble(AbstractProject<?, ?> project2) {
+    private AbstractBuild<?, ?> findFirstBuildWithJumble(AbstractProject<?, ?> project) {
         AbstractBuild<?,?> build = project.getFirstBuild();
-        while(lookupReportFor(build) == null) {
+        while(build != null && lookupReportFor(build) == null) {
             build = build.getNextBuild();
         }
         return build;
@@ -75,7 +76,10 @@ public class GraphAction implements Action {
     }
 
     private ReportBuildAction lookupJumbleAction(AbstractBuild<?, ?> build) {
-        ReportBuildAction action = build.getAction(ReportBuildAction.class);
+        ReportBuildAction action = null;
+        if (build != null) {
+            action = build.getAction(ReportBuildAction.class);
+        }
         return action;
     }
 
@@ -104,22 +108,37 @@ public class GraphAction implements Action {
         return targetScore;
     }
 
-    public void doTrend(final StaplerRequest request, StaplerResponse response) throws IOException, ServletException {
-        Area graphSize = calculateDefaultSize();
-        new Graph(project.getLastBuild().getTimestamp(),graphSize.width,graphSize.height) {
-            protected JFreeChart createGraph() {
-                return createChart(request, dataset);
-            }
-        }.doPng(request,response);
+    public void doTrend(StaplerRequest request, StaplerResponse response) throws IOException, ServletException {
+        if(isThereEnoughInformationForAGraph()) {
+            buildGraph(project).doPng(request,response);
+        } else {
+            returnNoContent(response);
+        }
     }
 
-    public void doTrendMap(final StaplerRequest request, StaplerResponse response) throws IOException {
+    public void doTrendMap(StaplerRequest request, StaplerResponse response) throws IOException {
+        if(isThereEnoughInformationForAGraph()) {
+            buildGraph(project).doMap(request,response);
+        } else {
+            returnNoContent(response);
+        }
+    }
+
+    public boolean isThereEnoughInformationForAGraph() {
+        return project.getBuilds().size() > 1 && dataset.getColumnCount() > 1;
+    }
+
+    private void returnNoContent(StaplerResponse response) throws IOException {
+        response.sendError(HttpServletResponse.SC_NO_CONTENT);
+    }
+
+    private Graph buildGraph(AbstractProject<?, ?> project) {
         Area graphSize = calculateDefaultSize();
-        new Graph(project.getLastBuild().getTimestamp(),graphSize.width,graphSize.height) {
+        return new Graph(project.getLastBuild().getTimestamp(),graphSize.width,graphSize.height) {
             protected JFreeChart createGraph() {
-                return createChart(request, dataset);
+                return createChart(dataset);
             }
-        }.doMap(request,response);
+        };
     }
 
     private Area calculateDefaultSize() {
@@ -130,7 +149,7 @@ public class GraphAction implements Action {
             return new Area(500,200);
     }
 
-    private JFreeChart createChart(StaplerRequest req,CategoryDataset dataset) {
+    private JFreeChart createChart(CategoryDataset dataset) {
         final JFreeChart chart = ChartFactory.createStackedAreaChart(null, null, SCORE_SERIES, dataset,
                 PlotOrientation.VERTICAL, false, true, false);
 

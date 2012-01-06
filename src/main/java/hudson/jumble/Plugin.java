@@ -12,9 +12,11 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import hudson.util.FormValidation;
+import hudson.util.IOUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,11 +51,13 @@ public class Plugin extends Recorder
 
     @Override
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException {
+        InputStream reportStream = null;
         try {
             FilePath report = build.getWorkspace().child(reportPath);
-            listener.getLogger().println(Messages.plugin_publishingReport());
+            reportStream = report.read();
+            jumbleReport = new ReportWriter().read(reportStream);
 
-            jumbleReport = new ReportWriter().read(report.read());
+            listener.getLogger().println(Messages.plugin_publishingReport());
             copyReportToBuildFolder(build, report);
             build.getActions().add(new ReportBuildAction(jumbleReport, targetScore, build));
             build.getProject().getAction(GraphAction.class).addReportToGraph(jumbleReport, build);
@@ -63,6 +67,8 @@ public class Plugin extends Recorder
         } catch (Exception e) {
             listener.getLogger().println("error:" + e.getClass().getCanonicalName() + ":" + e.getMessage());
             e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(reportStream);
         }
 
         return true;
