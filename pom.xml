@@ -28,7 +28,7 @@
 
     <scm>
         <connection>scm:git:git://github.com/hudson-plugins/JumbleHudsonPlugin.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/hudson-plugins/JumbleHudsonPlugin.git</developerConnection>
+        <developerConnection>scm:git:git://git@github.com/hudson-plugins/JumbleHudsonPlugin.git</developerConnection>
         <url>https://github.com/hudson-plugins/JumbleHudsonPlugin.git</url>
     </scm>
 
